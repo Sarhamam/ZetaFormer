@@ -427,7 +427,7 @@ Areas for improvement:
   title={ZetaFormer: Adaptive Polylipse Curriculum Learning},
   author={Noetic Eidos Project},
   year={2025},
-  url={https://github.com/...}
+  url={https://github.com/Sarhamam/ZetaFormer}
 }
 ```
 
