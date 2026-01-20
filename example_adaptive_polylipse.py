@@ -580,4 +580,4 @@ if __name__ == "__main__":
 
     else:
         # Default: run full curriculum
-        run_full_curriculum(max_n_foci=1000000000, epochs_per_level=1)
+        run_full_curriculum(max_n_foci=32, epochs_per_level=100)
