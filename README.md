@@ -209,6 +209,120 @@ Subject to:
 
 This is solved via constrained optimization in `solve_focal_config()`.
 
+## Experimental Results: Emergent Structure from Learning Dynamics
+
+A 32-level curriculum run (1→32 foci) reveals striking emergent behavior in the κζ dynamics:
+
+### Curriculum Progression
+
+![κζ Progression](polylipse_curriculum_results/curriculum_progression.png)
+
+**Key observations:**
+- **Phase transition at n≈5-8**: κζ peaks at ~1.42 before settling into a lower attractor
+- **Self-organized stability**: The system converges to κζ ≈ 1.15-1.25 for n > 15 foci
+- **Target-emergent tracking**: The bar chart shows how well the emergent κζ matches the target from the previous level
+
+### κζ Evolution Through Training
+
+![κζ Evolution](polylipse_curriculum_results/kappa_evolution.png)
+
+The full training dynamics across ~100,000 epochs reveal:
+- **Transition spikes**: Each curriculum level change (red dashed lines) produces characteristic perturbations
+- **Rapid recovery**: The model quickly adapts to new geometric complexity after each transition
+- **Oscillatory regime**: The smoothed signal (MA-20) shows rhythmic patterns that dampen over time
+
+### Geometric Emergence
+
+![Curriculum Levels Grid](polylipse_curriculum_results/curriculum_levels_grid.png)
+
+The focal configurations evolve from simple to complex:
+- **Early levels (n=1-4)**: Irregular, asymmetric focal arrangements
+- **Mid levels (n=5-15)**: Increasingly regular polygonal structures
+- **Late levels (n>20)**: Nearly-circular arrangements with uniform angular spacing
+
+This progression suggests the model discovers that **symmetric configurations minimize κζ variance**, driving the geometry toward uniform distributions at high focal counts.
+
+### Weight Sparsity at Phase Transition
+
+A striking finding is the **sparse weight allocation** during the κζ peak:
+
+| Level 5 (Peak κζ=1.42) | Level 20 (Stable κζ=1.20) |
+|------------------------|---------------------------|
+| ![Level 5](polylipse_curriculum_results/level_5_geometry.png) | ![Level 20](polylipse_curriculum_results/level_20_geometry.png) |
+| Weights: [0.60, 0.31, 0.00, 0.00, 0.10] | Weights: ~0.05 per focus (uniform) |
+| **Sparse**: Only 3 of 5 foci are active | **Dense**: All 20 foci contribute equally |
+
+The system achieves high κζ through **strategic weight concentration** on a subset of foci, then transitions to uniform distributions as complexity increases.
+
+### CGD Decision Boundaries
+
+The Conjugate Gradient Descent solver with dual-kernel (Gaussian-Poisson) attention learns decision boundaries that respect the focal geometry. The CGD score field (blue = positive, red = negative) shows how the model partitions space based on learned κζ representations. The black contour marks the decision boundary.
+
+<details>
+<summary><strong>📊 Full 32-Level CGD Progression (click to expand)</strong></summary>
+
+#### Levels 1-8: Early Curriculum (Low Complexity → Peak κζ)
+
+| Level 1 | Level 2 | Level 3 | Level 4 |
+|---------|---------|---------|---------|
+| ![L1](polylipse_curriculum_results/cgd/cgd_level_1_n1.png) | ![L2](polylipse_curriculum_results/cgd/cgd_level_2_n2.png) | ![L3](polylipse_curriculum_results/cgd/cgd_level_3_n3.png) | ![L4](polylipse_curriculum_results/cgd/cgd_level_4_n4.png) |
+
+| Level 5 | Level 6 | Level 7 | Level 8 |
+|---------|---------|---------|---------|
+| ![L5](polylipse_curriculum_results/cgd/cgd_level_5_n5.png) | ![L6](polylipse_curriculum_results/cgd/cgd_level_6_n6.png) | ![L7](polylipse_curriculum_results/cgd/cgd_level_7_n7.png) | ![L8](polylipse_curriculum_results/cgd/cgd_level_8_n8.png) |
+
+#### Levels 9-16: Mid Curriculum (Transition to Stability)
+
+| Level 9 | Level 10 | Level 11 | Level 12 |
+|---------|----------|----------|----------|
+| ![L9](polylipse_curriculum_results/cgd/cgd_level_9_n9.png) | ![L10](polylipse_curriculum_results/cgd/cgd_level_10_n10.png) | ![L11](polylipse_curriculum_results/cgd/cgd_level_11_n11.png) | ![L12](polylipse_curriculum_results/cgd/cgd_level_12_n12.png) |
+
+| Level 13 | Level 14 | Level 15 | Level 16 |
+|----------|----------|----------|----------|
+| ![L13](polylipse_curriculum_results/cgd/cgd_level_13_n13.png) | ![L14](polylipse_curriculum_results/cgd/cgd_level_14_n14.png) | ![L15](polylipse_curriculum_results/cgd/cgd_level_15_n15.png) | ![L16](polylipse_curriculum_results/cgd/cgd_level_16_n16.png) |
+
+#### Levels 17-24: Late Curriculum (Stable κζ Regime)
+
+| Level 17 | Level 18 | Level 19 | Level 20 |
+|----------|----------|----------|----------|
+| ![L17](polylipse_curriculum_results/cgd/cgd_level_17_n17.png) | ![L18](polylipse_curriculum_results/cgd/cgd_level_18_n18.png) | ![L19](polylipse_curriculum_results/cgd/cgd_level_19_n19.png) | ![L20](polylipse_curriculum_results/cgd/cgd_level_20_n20.png) |
+
+| Level 21 | Level 22 | Level 23 | Level 24 |
+|----------|----------|----------|----------|
+| ![L21](polylipse_curriculum_results/cgd/cgd_level_21_n21.png) | ![L22](polylipse_curriculum_results/cgd/cgd_level_22_n22.png) | ![L23](polylipse_curriculum_results/cgd/cgd_level_23_n23.png) | ![L24](polylipse_curriculum_results/cgd/cgd_level_24_n24.png) |
+
+#### Levels 25-32: Final Curriculum (High Focal Complexity)
+
+| Level 25 | Level 26 | Level 27 | Level 28 |
+|----------|----------|----------|----------|
+| ![L25](polylipse_curriculum_results/cgd/cgd_level_25_n25.png) | ![L26](polylipse_curriculum_results/cgd/cgd_level_26_n26.png) | ![L27](polylipse_curriculum_results/cgd/cgd_level_27_n27.png) | ![L28](polylipse_curriculum_results/cgd/cgd_level_28_n28.png) |
+
+| Level 29 | Level 30 | Level 31 | Level 32 |
+|----------|----------|----------|----------|
+| ![L29](polylipse_curriculum_results/cgd/cgd_level_29_n29.png) | ![L30](polylipse_curriculum_results/cgd/cgd_level_30_n30.png) | ![L31](polylipse_curriculum_results/cgd/cgd_level_31_n31.png) | ![L32](polylipse_curriculum_results/cgd/cgd_level_32_n32.png) |
+
+</details>
+
+**Key observations from the CGD progression:**
+- **Early levels (1-4)**: Simple linear or curved decision boundaries separating 1-4 focal regions
+- **Peak κζ levels (5-8)**: Complex, asymmetric boundaries reflecting sparse weight allocation
+- **Transition levels (9-16)**: Boundaries become more regular as focal weights equalize
+- **Stable levels (17-32)**: Nearly radial partitioning as foci approach uniform circular distribution
+
+### Emergent Phenomena Summary
+
+| Phenomenon | Description | Curriculum Range |
+|------------|-------------|------------------|
+| **Phase Transition** | κζ peaks then drops to stable attractor | n=5-8 |
+| **Self-Organization** | κζ converges to narrow band (~1.15-1.25) | n>15 |
+| **Symmetry Breaking** | Early levels show asymmetric focal configs | n=2-6 |
+| **Symmetry Restoration** | Late levels approach uniform circular | n>20 |
+| **Transition Dynamics** | Spike-recovery pattern at level boundaries | All |
+
+These results demonstrate that **the learning dynamics themselves shape the geometry**, creating a feedback loop where emergent κζ values determine future training distributions.
+
+---
+
 ## Example Workflows
 
 ### Train and Visualize
@@ -432,6 +546,13 @@ Areas for improvement:
 ```
 
 ## Changelog
+
+### v2.1 (2025-01-20)
+- 📊 **Experimental results section** documenting 32-level curriculum run
+- 📈 **Emergent structure analysis** with phase transitions and self-organization
+- 🖼️ **Results gallery** including progression, evolution, and geometry visualizations
+- 📝 **Weight sparsity documentation** showing sparse→dense transition
+- 🗺️ **CGD boundary examples** demonstrating dual-kernel decision surfaces
 
 ### v2.0 (2025-01-08)
 - ✨ **Enhanced checkpoint format** with comprehensive metadata
